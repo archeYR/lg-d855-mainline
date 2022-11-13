@@ -3,6 +3,7 @@
 #include "qcom-pm8841.dtsi"
 #include "qcom-pm8941.dtsi"
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
 #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 
 / {
@@ -152,6 +153,33 @@
 
 		bias-pull-up;
 		power-source = <PM8941_GPIO_S3>;
+	};
+};
+
+&pm8941_lpg {
+	status = "okay";
+
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	qcom,power-source = <1>;
+
+	led@5 {
+		reg = <5>;
+		function = LED_FUNCTION_STATUS;
+		color = <LED_COLOR_ID_BLUE>;
+	};
+
+	led@6 {
+		reg = <6>;
+		function = LED_FUNCTION_STATUS;
+		color = <LED_COLOR_ID_GREEN>;
+	};
+
+	led@7 {
+		reg = <7>;
+		function = LED_FUNCTION_STATUS;
+		color = <LED_COLOR_ID_RED>;
 	};
 };
 
