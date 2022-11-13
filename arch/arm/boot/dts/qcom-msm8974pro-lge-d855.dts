@@ -41,6 +41,23 @@
 		};
 	};
 
+	gpio-hall-sensor {
+		compatible = "gpio-keys";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_hall_sensor_default>;
+
+		label = "GPIO Hall Effect Sensor";
+
+		event-hall-sensor {
+			label = "Hall Effect Sensor";
+			gpios = <&tlmm 144 GPIO_ACTIVE_LOW>;
+			linux,input-type = <EV_SW>;
+			linux,code = <SW_LID>;
+			linux,can-disable;
+		};
+	};
+
 	gpio-keys {
 		compatible = "gpio-keys";
 
@@ -104,6 +121,20 @@
 	};
 };
 
+&blsp1_i2c3 {
+	status = "okay";
+
+	magnetometer@c {
+		compatible = "alps,hscdtd008a";
+		reg = <0x0c>;
+		interrupts-extended = <&tlmm 67 IRQ_TYPE_EDGE_RISING>;
+		dvdd-supply = <&pm8941_lvs1>;
+		avdd-supply = <&pm8941_l17>;
+
+		/* Add mount matrix here */
+	};
+};
+
 &blsp2_i2c5 {
 	status = "okay";
 
@@ -118,6 +149,36 @@
 		
 		enable-gpios = <&tlmm 94 GPIO_ACTIVE_HIGH>;
 		firmware-gpios = <&tlmm 92 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&blsp2_i2c6 {
+	status = "okay";
+
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	gyroscope@68 {
+		compatible = "invensense,mpu6515";
+		reg = <0x68>;
+		interrupts-extended = <&tlmm 66 IRQ_TYPE_EDGE_FALLING>;
+		vddio-supply = <&pm8941_lvs1>;
+		vdd-supply = <&pm8941_l17>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&mpu6515_pin>;
+
+		/* Add mount matrix here */
+	};
+
+	proximity@39 {
+		compatible = "avago,apds9930";
+		reg = <0x39>;
+		interrupts-extended = <&tlmm 61 IRQ_TYPE_EDGE_FALLING>;
+		vddio-supply = <&pm8941_lvs1>;
+		vdd-supply = <&pm8941_l17>;
+		led-max-microamp = <100000>;
+		amstaos,proximity-diodes = <1>;
 	};
 };
 
@@ -407,6 +468,7 @@
 			regulator-boot-on;
 		};
 		
+		pm8941_lvs1: lvs1 {};
 		pm8941_lvs3: lvs3 {};
 	};
 };
@@ -496,7 +558,14 @@
 			bias-pull-down;
 		};
 	};
-		
+
+	mpu6515_pin: mpu6515 {
+		pins = "gpio66";
+		function = "gpio";
+		bias-disable;
+		input-enable;
+	};
+
 	touch_pin: touch {
 		int {
 			pins = "gpio73";
@@ -515,4 +584,13 @@
 			bias-pull-up;
 		};
 	};
+	
+	gpio_hall_sensor_default: gpio-hall-sensor-default {
+		pins = "gpio144";
+		function = "gpio";
+
+		drive-strength = <2>;
+		bias-disable;
+	};
+	
 };
