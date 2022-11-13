@@ -82,9 +82,18 @@
 	};
 
 	vibrator {
-		compatible = "gpio-vibrator";
-		enable-gpios = <&tlmm 53 GPIO_ACTIVE_HIGH>;
+		compatible = "clk-vibrator";
+
 		vcc-supply = <&pm8941_l23>;
+
+		clocks = <&mmcc CAMSS_GP1_CLK>;
+		clock-names = "core";
+		clock-frequency = <29813>;
+
+		enable-gpios = <&tlmm 53 GPIO_ACTIVE_HIGH>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&vibrator_pin>;
 	};
 };
 
@@ -592,5 +601,19 @@
 		drive-strength = <2>;
 		bias-disable;
 	};
-	
+
+	vibrator_pin: vibrator {
+		core {
+			pins = "gpio27";
+			function = "gp1_clk";
+
+			drive-strength = <6>;
+			bias-disable;
+		};
+
+		enable {
+			pins = "gpio53";
+			function = "gpio";
+		};
+	};
 };
