@@ -183,7 +183,7 @@
 	proximity@39 {
 		compatible = "avago,apds9930";
 		reg = <0x39>;
-		interrupts-extended = <&tlmm 61 IRQ_TYPE_EDGE_FALLING>;
+		interrupts-extended = <&tlmm 102 IRQ_TYPE_EDGE_FALLING>;
 		vddio-supply = <&pm8941_lvs1>;
 		vdd-supply = <&pm8941_l17>;
 		led-max-microamp = <100000>;
