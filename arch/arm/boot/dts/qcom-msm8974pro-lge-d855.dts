@@ -147,15 +147,14 @@
 &blsp2_i2c5 {
 	status = "okay";
 
-	/* Doesn't work */
 	nfc@28 {
-		compatible = "nxp,pn544-i2c";
+		compatible = "nxp,pn547", "nxp,nxp-nci-i2c";
 
 		reg = <0x28>;
 
 		interrupt-parent = <&tlmm>;
-		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
-		
+		interrupts = <5 IRQ_TYPE_EDGE_RISING>;
+
 		enable-gpios = <&tlmm 94 GPIO_ACTIVE_HIGH>;
 		firmware-gpios = <&tlmm 92 GPIO_ACTIVE_HIGH>;
 	};
