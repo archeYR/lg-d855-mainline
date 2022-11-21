@@ -100,6 +100,15 @@
 &blsp1_i2c1 {
 	status = "okay";
 
+	/* D855 uses a bq24296, however bq24190 driver seems to work */
+	charger: bq24192@6b {
+		compatible = "ti,bq24192";
+		reg = <0x6b>;
+		interrupts-extended = <&pm8941_gpios 22 IRQ_TYPE_EDGE_FALLING>;
+		omit-battery-class;
+		usb_otg_vbus: usb-otg-vbus { };
+	};
+
 	fuelgauge: max17048@36 {
 		compatible = "maxim,max17048";
 		reg = <0x36>;
@@ -212,8 +221,8 @@
 
 	phys = <&usb_hs1_phy>;
 	phy-select = <&tcsr 0xb000 0>;
-	extcon = <&smbb>, <&usb_id>;
-	vbus-supply = <&chg_otg>;
+	extcon = <&charger>, <&usb_id>;
+	vbus-supply = <&usb_otg_vbus>;
 
 	hnp-disable;
 	srp-disable;
@@ -226,7 +235,7 @@
 			v1p8-supply = <&pm8941_l6>;
 			v3p3-supply = <&pm8941_l24>;
 
-			extcon = <&smbb>;
+			extcon = <&charger>;
 			qcom,init-seq = /bits/ 8 <0x1 0x64>;
 		};
 	};
@@ -239,6 +248,13 @@
 
 		bias-pull-up;
 		power-source = <PM8941_GPIO_S3>;
+	};
+
+	otg {
+		gpio-hog;
+		gpios = <35 GPIO_ACTIVE_HIGH>;
+		output-high;
+		line-name = "otg-gpio";
 	};
 };
 
